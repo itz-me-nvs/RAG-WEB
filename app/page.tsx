@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from "react";
 import { FiCpu, FiLink, FiSend, FiUpload } from "react-icons/fi";
+import { API_BASE_URL } from "../lib/constants";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -10,12 +11,12 @@ export default function Home() {
   const [chat, setChat] = useState<{ type: "user" | "bot"; text: string }[]>([]);
   const [uploading, setUploading] = useState(false);
   const [asking, setAsking] = useState(false);
-  const [isReady, setIsReady] = useState(true);
+  const [isReady, setIsReady] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.removeItem("request_id");
-    // setIsReady(false);
+    setIsReady(false);
   }, []);
 
   useEffect(() => {
@@ -26,8 +27,22 @@ export default function Home() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFile(e.target.files[0]);
-      setUrl("");
+      const selectedFile = e.target.files[0];
+      if (selectedFile) {
+        const allowedFileTypes = [".pdf", ".txt", ".docx"];
+        console.log(selectedFile);
+        const fileName = selectedFile.name.toLowerCase();
+        const fileExtension = fileName.substring(fileName.lastIndexOf("."));
+
+        if (allowedFileTypes.includes(fileExtension)) {
+          setFile(selectedFile);
+          setUrl("");
+        } else {
+          alert("Invalid file type. Please select a .pdf, .txt, or .docx file.");
+          // Reset the file input
+          e.target.value = "";
+        }
+      }
     }
   };
 
@@ -42,8 +57,9 @@ export default function Home() {
     setChat([]);
     const formData = new FormData();
     formData.append("file", file);
+
     try {
-      const response = await fetch("http://localhost:8000/api/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
         body: formData,
       });
@@ -65,7 +81,7 @@ export default function Home() {
     setUploading(true);
     setChat([]);
     try {
-      const response = await fetch("http://localhost:8000/api/load-from-web", {
+      const response = await fetch(`${API_BASE_URL}/api/load-from-web`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +93,7 @@ export default function Home() {
         localStorage.setItem("request_id", data.response.request_id);
         setIsReady(true);
         setChat((prevChat) => [...prevChat, { type: "bot", text: "URL processed successfully. You can now ask questions." }]);
-         setUrl("");
+        setUrl("");
       }
     } catch (error) {
       console.error(error);
@@ -99,12 +115,12 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/custom-chat", {
+      const response = await fetch(`${API_BASE_URL}/api/custom-chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question, request_id: "d459fb82-d241-4b26-aeae-466b4657e333" }),
+        body: JSON.stringify({ question, request_id }),
       });
       const data = await response.json();
       if (data.response && data.response.answer) {
@@ -190,7 +206,7 @@ export default function Home() {
 
             {/* Right side: File Upload and URL Input */}
             <div className="flex flex-col h-full bg-white dark:bg-zinc-800 rounded-2xl shadow-2xl p-6 space-y-6">
-                <div className="flex flex-col grow-[3]"> {/* Upload Document section */}
+                <div className="flex flex-col flex-grow-[3]"> {/* Upload Document section */}
                     <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">Upload Document</h2>
                     <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl p-8">
                         <FiUpload className="h-16 w-16 text-zinc-400 dark:text-zinc-500 mb-4" />
@@ -208,7 +224,7 @@ export default function Home() {
                         {uploading && file ? "Uploading..." : "Upload"}
                     </button>
                 </div>
-                <div className="flex flex-col grow-[1]"> {/* Enter URL section */}
+                <div className="flex flex-col flex-grow-[1]"> {/* Enter URL section */}
                     <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">Enter URL</h2>
                     <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl p-8">
                         <FiLink className="h-16 w-16 text-zinc-400 dark:text-zinc-500 mb-4" />
