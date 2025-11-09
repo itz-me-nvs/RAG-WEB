@@ -13,6 +13,7 @@ export default function Home() {
   const [asking, setAsking] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function Home() {
         localStorage.setItem("request_id", data.response.request_id);
         setIsReady(true);
         setChat((prevChat) => [...prevChat, { type: "bot", text: "File uploaded successfully. You can now ask questions." }]);
+        generateSuggestedQuestions();
         setShowUploadModal(false);
         setFile(null);
       }
@@ -96,6 +98,7 @@ export default function Home() {
         localStorage.setItem("request_id", data.response.request_id);
         setIsReady(true);
         setChat((prevChat) => [...prevChat, { type: "bot", text: "URL processed successfully. You can now ask questions." }]);
+        generateSuggestedQuestions();
         setShowUploadModal(false);
         setUrl("");
       }
@@ -104,6 +107,20 @@ export default function Home() {
       setChat((prevChat) => [...prevChat, { type: "bot", text: "Sorry, there was an error processing the URL." }]);
     }
     setUploading(false);
+  };
+
+  const generateSuggestedQuestions = () => {
+    const suggestions = [
+      "What is the main topic of this document?",
+      "Can you summarize the key points?",
+      "What are the important details mentioned?",
+      "Are there any specific dates or numbers mentioned?",
+    ];
+    setSuggestedQuestions(suggestions);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setQuestion(suggestion);
   };
 
   const handleQuestionSubmit = async () => {
@@ -198,6 +215,23 @@ export default function Home() {
                         </div>
                     )}
                 </div>
+                {isReady && suggestedQuestions.length > 0 && (
+                    <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-white dark:bg-gray-800">
+                        <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Suggested Questions:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {suggestedQuestions.map((suggestion, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    className="px-4 py-2 text-sm bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900 dark:to-primary-800 text-primary-700 dark:text-primary-200 rounded-full border border-primary-200 dark:border-primary-700 hover:from-primary-100 hover:to-primary-200 dark:hover:from-primary-800 dark:hover:to-primary-700 hover:shadow-md transition-all active:scale-95"
+                                    disabled={asking}
+                                >
+                                    {suggestion}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
                 <div className="flex items-center gap-3 border-t border-gray-200 dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-800">
                     <input
                     type="text"
