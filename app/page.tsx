@@ -1,24 +1,47 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import { FiCpu, FiLink, FiSend, FiUpload, FiX } from "react-icons/fi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FiCpu, FiLink, FiSend, FiUpload, FiX, FiClock } from "react-icons/fi";
 import { API_BASE_URL } from "../lib/constants";
+import {
+  saveSession,
+  updateSession,
+  getSession,
+  ChatMessage,
+} from "@/lib/chatHistory";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string>("");
   const [question, setQuestion] = useState<string>("");
-  const [chat, setChat] = useState<{ type: "user" | "bot"; text: string }[]>([]);
+  const [chat, setChat] = useState<ChatMessage[]>([]);
   const [uploading, setUploading] = useState(false);
   const [asking, setAsking] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    localStorage.removeItem("request_id");
-    setIsReady(false);
-  }, []);
+    const sessionId = searchParams.get("session");
+    if (sessionId) {
+      // Load existing session
+      const session = getSession(sessionId);
+      if (session) {
+        setCurrentSessionId(session.id);
+        setChat(session.messages);
+        localStorage.setItem("request_id", session.requestId);
+        setIsReady(true);
+      }
+    } else {
+      // New session - clear request_id
+      localStorage.removeItem("request_id");
+      setIsReady(false);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -56,6 +79,7 @@ export default function Home() {
     if (!file) return;
     setUploading(true);
     setChat([]);
+    setCurrentSessionId(null); // Reset session for new upload
     const formData = new FormData();
     formData.append("file", file);
 
@@ -83,6 +107,7 @@ export default function Home() {
     if (!url) return;
     setUploading(true);
     setChat([]);
+    setCurrentSessionId(null); // Reset session for new URL
     try {
       const response = await fetch(`${API_BASE_URL}/api/load-from-web`, {
         method: "POST",
@@ -109,7 +134,8 @@ export default function Home() {
   const handleQuestionSubmit = async () => {
     if (!question || asking) return;
     setAsking(true);
-    setChat((prevChat) => [...prevChat, { type: "user", text: question }]);
+    const newUserMessage: ChatMessage = { type: "user", text: question };
+    setChat((prevChat) => [...prevChat, newUserMessage]);
     const request_id = localStorage.getItem("request_id");
 
     if (!request_id) {
@@ -128,7 +154,20 @@ export default function Home() {
       });
       const data = await response.json();
       if (data.response && data.response.answer) {
-        setChat((prevChat) => [...prevChat, { type: "bot", text: data.response.answer }]);
+        const newBotMessage: ChatMessage = { type: "bot", text: data.response.answer };
+        setChat((prevChat) => {
+          const updatedChat = [...prevChat, newBotMessage];
+
+          // Save or update session after successful response
+          if (currentSessionId) {
+            updateSession(currentSessionId, updatedChat);
+          } else {
+            const newSession = saveSession(request_id, updatedChat);
+            setCurrentSessionId(newSession.id);
+          }
+
+          return updatedChat;
+        });
       }
     } catch (error) {
       console.error(error);
@@ -145,13 +184,22 @@ export default function Home() {
             <div className="md:col-span-2 flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
                 <header className="flex items-center justify-between bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-6 md:px-8 py-6 border-b border-primary-600">
                     <h1 className="text-2xl md:text-3xl font-bold text-white">RAG Chatbot</h1>
-                    <button
-                        onClick={() => setShowUploadModal(true)}
-                        className="md:hidden rounded-full bg-white/20 hover:bg-white/30 p-2.5 text-white shadow-lg transition-all hover:scale-110 active:scale-95"
-                        title="Upload document or URL"
-                    >
-                        <FiUpload className="h-6 w-6" />
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => router.push("/history")}
+                            className="rounded-full bg-white/20 hover:bg-white/30 p-2.5 text-white shadow-lg transition-all hover:scale-110 active:scale-95"
+                            title="View chat history"
+                        >
+                            <FiClock className="h-6 w-6" />
+                        </button>
+                        <button
+                            onClick={() => setShowUploadModal(true)}
+                            className="md:hidden rounded-full bg-white/20 hover:bg-white/30 p-2.5 text-white shadow-lg transition-all hover:scale-110 active:scale-95"
+                            title="Upload document or URL"
+                        >
+                            <FiUpload className="h-6 w-6" />
+                        </button>
+                    </div>
                 </header>
                 <div ref={chatContainerRef} className="flex-1 space-y-6 overflow-y-auto p-6 max-h-[80vh]">
                     {isReady ? (
