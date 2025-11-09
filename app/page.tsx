@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import { FiCpu, FiLink, FiSend, FiUpload } from "react-icons/fi";
+import { FiCpu, FiLink, FiSend, FiUpload, FiX } from "react-icons/fi";
 import { API_BASE_URL } from "../lib/constants";
 
 export default function Home() {
@@ -12,6 +12,7 @@ export default function Home() {
   const [uploading, setUploading] = useState(false);
   const [asking, setAsking] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,6 +69,8 @@ export default function Home() {
         localStorage.setItem("request_id", data.response.request_id);
         setIsReady(true);
         setChat((prevChat) => [...prevChat, { type: "bot", text: "File uploaded successfully. You can now ask questions." }]);
+        setShowUploadModal(false);
+        setFile(null);
       }
     } catch (error) {
       console.error(error);
@@ -93,6 +96,7 @@ export default function Home() {
         localStorage.setItem("request_id", data.response.request_id);
         setIsReady(true);
         setChat((prevChat) => [...prevChat, { type: "bot", text: "URL processed successfully. You can now ask questions." }]);
+        setShowUploadModal(false);
         setUrl("");
       }
     } catch (error) {
@@ -139,8 +143,15 @@ export default function Home() {
         <div className="mx-auto w-full h-full grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Left side: Chat Interface */}
             <div className="md:col-span-2 flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                <header className="flex items-center justify-between bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-8 py-6 border-b border-primary-600">
-                    <h1 className="text-3xl font-bold text-white">RAG Chatbot</h1>
+                <header className="flex items-center justify-between bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-6 md:px-8 py-6 border-b border-primary-600">
+                    <h1 className="text-2xl md:text-3xl font-bold text-white">RAG Chatbot</h1>
+                    <button
+                        onClick={() => setShowUploadModal(true)}
+                        className="md:hidden rounded-full bg-white/20 hover:bg-white/30 p-2.5 text-white shadow-lg transition-all hover:scale-110 active:scale-95"
+                        title="Upload document or URL"
+                    >
+                        <FiUpload className="h-6 w-6" />
+                    </button>
                 </header>
                 <div ref={chatContainerRef} className="flex-1 space-y-6 overflow-y-auto p-6 max-h-[80vh]">
                     {isReady ? (
@@ -208,8 +219,8 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Right side: File Upload and URL Input */}
-            <div className="flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            {/* Right side: File Upload and URL Input - Hidden on Mobile */}
+            <div className="hidden md:flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
                 {/* Upload Document section */}
                 <div className="flex flex-col flex-grow-[3] p-8 border-b border-gray-200 dark:border-gray-700">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-3">
@@ -264,6 +275,84 @@ export default function Home() {
                 </div>
             </div>
         </div>
+
+        {/* Mobile Upload Modal */}
+        {showUploadModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                <div className="relative w-full max-w-md max-h-[90vh] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-y-auto">
+                    {/* Close Button */}
+                    <button
+                        onClick={() => setShowUploadModal(false)}
+                        className="sticky top-4 right-4 float-right rounded-full bg-gray-100 dark:bg-gray-700 p-2.5 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                        title="Close"
+                    >
+                        <FiX className="h-6 w-6" />
+                    </button>
+
+                    <div className="p-6 space-y-8">
+                        {/* Upload Document section */}
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary-100 dark:bg-primary-900">
+                                    <FiUpload className="h-6 w-6 text-primary-600 dark:text-primary-300" />
+                                </div>
+                                Upload Document
+                            </h2>
+                            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 bg-gray-50 dark:bg-gray-700">
+                                <FiUpload className="h-16 w-16 text-primary-300 dark:text-primary-700 mb-4" />
+                                <input id="file-upload-modal" type="file" onChange={handleFileChange} className="hidden" />
+                                <label htmlFor="file-upload-modal" className="cursor-pointer bg-gradient-to-r from-primary-500 to-primary-600 hover:shadow-lg text-white px-8 py-3 rounded-full font-semibold shadow-lg transition-all hover:scale-105 active:scale-95">
+                                    Choose a file
+                                </label>
+                                {file && <p className="mt-4 text-sm text-primary-600 dark:text-primary-300 font-medium text-center">{file.name}</p>}
+                                <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">Supports: PDF, TXT, DOCX</p>
+                            </div>
+                            <button
+                                onClick={handleFileUpload}
+                                disabled={!file || uploading}
+                                className="mt-6 w-full rounded-full bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-gray-200 py-3 text-white dark:text-gray-900 font-semibold shadow-lg transition-all hover:shadow-xl active:scale-95 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-md disabled:cursor-not-allowed"
+                            >
+                                {uploading && file ? "Uploading..." : "Upload"}
+                            </button>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="flex items-center gap-4">
+                            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                            <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">OR</span>
+                            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                        </div>
+
+                        {/* Enter URL section */}
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-secondary-100 dark:bg-secondary-900">
+                                    <FiLink className="h-6 w-6 text-secondary-600 dark:text-secondary-300" />
+                                </div>
+                                Enter URL
+                            </h2>
+                            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 bg-gray-50 dark:bg-gray-700">
+                                <FiLink className="h-16 w-16 text-secondary-300 dark:text-secondary-700 mb-4" />
+                                <input
+                                    type="text"
+                                    value={url}
+                                    onChange={handleUrlChange}
+                                    placeholder="Enter a URL"
+                                    className="w-full rounded-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-3 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all"
+                                />
+                            </div>
+                            <button
+                                onClick={handleUrlSubmit}
+                                disabled={!url || uploading}
+                                className="mt-6 w-full rounded-full bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-gray-200 py-3 text-white dark:text-gray-900 font-semibold shadow-lg transition-all hover:shadow-xl active:scale-95 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-md disabled:cursor-not-allowed"
+                            >
+                                {uploading && url ? "Processing..." : "Submit"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
     </div>
   );
 }
