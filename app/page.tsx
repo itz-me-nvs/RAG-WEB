@@ -2,14 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FiCpu, FiLink, FiSend, FiUpload, FiX, FiClock } from "react-icons/fi";
+import { FiCpu, FiLink, FiSend, FiUpload, FiX, FiClock, FiFileText } from "react-icons/fi";
 import { API_BASE_URL } from "../lib/constants";
 import {
   saveSession,
   updateSession,
   getSession,
   ChatMessage,
+  SourceReference,
 } from "@/lib/chatHistory";
+import SourceReferenceModal from "@/components/SourceReferenceModal";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -20,6 +22,8 @@ export default function Home() {
   const [asking, setAsking] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showSourceModal, setShowSourceModal] = useState(false);
+  const [selectedSources, setSelectedSources] = useState<SourceReference[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -154,7 +158,39 @@ export default function Home() {
       });
       const data = await response.json();
       if (data.response && data.response.answer) {
-        const newBotMessage: ChatMessage = { type: "bot", text: data.response.answer };
+        // Extract sources from the API response
+        let sources: SourceReference[] = [];
+
+        // Check for various possible source formats from backend
+        if (data.response.sources) {
+          sources = data.response.sources;
+        } else if (data.response.context) {
+          // If backend returns context as a single string or array
+          if (Array.isArray(data.response.context)) {
+            sources = data.response.context.map((ctx: any) => ({
+              content: typeof ctx === 'string' ? ctx : ctx.content || ctx.text,
+              pageNumber: ctx.page_number || ctx.pageNumber,
+              score: ctx.score || ctx.similarity,
+              metadata: ctx.metadata,
+            }));
+          } else if (typeof data.response.context === 'string') {
+            sources = [{ content: data.response.context }];
+          }
+        } else if (data.response.retrieved_chunks) {
+          sources = data.response.retrieved_chunks.map((chunk: any) => ({
+            content: chunk.content || chunk.text,
+            pageNumber: chunk.page_number || chunk.pageNumber,
+            score: chunk.score,
+            metadata: chunk.metadata,
+          }));
+        }
+
+        const newBotMessage: ChatMessage = {
+          type: "bot",
+          text: data.response.answer,
+          sources: sources.length > 0 ? sources : undefined,
+        };
+
         setChat((prevChat) => {
           const updatedChat = [...prevChat, newBotMessage];
 
@@ -175,6 +211,11 @@ export default function Home() {
     }
     setQuestion("");
     setAsking(false);
+  };
+
+  const handleShowSources = (sources: SourceReference[]) => {
+    setSelectedSources(sources);
+    setShowSourceModal(true);
   };
 
   return (
@@ -215,14 +256,26 @@ export default function Home() {
                               <FiCpu className="h-5 w-5 text-primary-600 dark:text-primary-300" />
                             </div>
                             )}
-                            <div
-                            className={`max-w-md rounded-2xl px-5 py-3 shadow-lg transition-all hover:shadow-xl ${
-                                message.type === "user"
-                                ? "bg-primary-500 text-white rounded-br-none"
-                                : "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100 rounded-bl-none"
-                            }`}
-                            >
-                            {message.text}
+                            <div className="flex flex-col gap-2 max-w-md">
+                              <div
+                              className={`rounded-2xl px-5 py-3 shadow-lg transition-all hover:shadow-xl ${
+                                  message.type === "user"
+                                  ? "bg-primary-500 text-white rounded-br-none"
+                                  : "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100 rounded-bl-none"
+                              }`}
+                              >
+                              {message.text}
+                              </div>
+                              {message.type === "bot" && message.sources && message.sources.length > 0 && (
+                                <button
+                                  onClick={() => handleShowSources(message.sources!)}
+                                  className="self-start flex items-center gap-2 px-3 py-1.5 text-sm bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-all hover:scale-105 active:scale-95 shadow-sm"
+                                  title="View source references"
+                                >
+                                  <FiFileText className="h-4 w-4" />
+                                  <span className="font-medium">{message.sources.length} source{message.sources.length !== 1 ? 's' : ''}</span>
+                                </button>
+                              )}
                             </div>
                         </div>
                         ))
@@ -400,6 +453,14 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+        )}
+
+        {/* Source Reference Modal */}
+        {showSourceModal && (
+          <SourceReferenceModal
+            sources={selectedSources}
+            onClose={() => setShowSourceModal(false)}
+          />
         )}
     </div>
   );

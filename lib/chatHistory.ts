@@ -1,6 +1,14 @@
+export interface SourceReference {
+  content: string;
+  pageNumber?: number;
+  score?: number;
+  metadata?: Record<string, any>;
+}
+
 export interface ChatMessage {
   type: "user" | "bot";
   text: string;
+  sources?: SourceReference[];
 }
 
 export interface ChatSession {
