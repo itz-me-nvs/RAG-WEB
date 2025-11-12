@@ -21,8 +21,8 @@ export default function HistoryPage() {
   };
 
   const handleSessionClick = (session: ChatSession) => {
-    // Navigate to main page with session ID as query parameter
-    router.push(`/?session=${session.id}`);
+    // Navigate to dashboard chat with session ID as query parameter
+    router.push(`/dashboard/chat?session=${session.id}`);
   };
 
   const handleDeleteSession = (
@@ -72,11 +72,11 @@ export default function HistoryPage() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/dashboard")}
             className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors mb-4"
           >
             <FiArrowLeft className="w-5 h-5" />
-            <span>Back to Chat</span>
+            <span>Back to Dashboard</span>
           </button>
 
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
@@ -100,7 +100,7 @@ export default function HistoryPage() {
               Your previous conversations will appear here
             </p>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/dashboard/chat")}
               className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:scale-105 transition-all"
             >
               Start a New Chat
