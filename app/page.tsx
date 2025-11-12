@@ -11,7 +11,26 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FiClock, FiCpu, FiFileText, FiLink, FiSend, FiUpload, FiX } from "react-icons/fi";
+import DocumentGenerationControls from "../components/DocumentGenerationControls";
+import DocumentPreviewModal from "../components/DocumentPreviewModal";
+import GeneratedDocumentCard from "../components/GeneratedDocumentCard";
 import { API_BASE_URL } from "../lib/constants";
+
+interface GeneratedDocument {
+  id: string;
+  type: 'pdf' | 'slider';
+  title: string;
+  description?: string;
+  pageCount?: number;
+  createdAt: string;
+  pdfUrl?: string;
+  slides?: Array<{
+    id: number;
+    title: string;
+    content: string;
+    imageUrl?: string;
+  }>;
+}
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -26,6 +45,10 @@ export default function Home() {
   const [selectedSources, setSelectedSources] = useState<SourceReference[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
+  const [generatedDocuments, setGeneratedDocuments] = useState<GeneratedDocument[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<GeneratedDocument | null>(null);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -233,6 +256,100 @@ export default function Home() {
   const handleShowSources = (sources: SourceReference[]) => {
     setSelectedSources(sources);
     setShowSourceModal(true);
+  }
+  const handleGeneratePDF = async () => {
+    setIsGenerating(true);
+    const request_id = localStorage.getItem("request_id");
+
+    try {
+      // TODO: Replace with actual API endpoint when backend is ready
+      // Simulating API call with mock data for now
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const newDocument: GeneratedDocument = {
+        id: `pdf-${Date.now()}`,
+        type: 'pdf',
+        title: 'Conversation Summary',
+        description: 'A comprehensive PDF document generated from your conversation',
+        pageCount: 5,
+        createdAt: new Date().toLocaleDateString(),
+        pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', // Example PDF
+      };
+
+      setGeneratedDocuments(prev => [...prev, newDocument]);
+      setChat((prevChat) => [...prevChat, { type: "bot", text: "✅ PDF document generated successfully! You can view and download it below." }]);
+    } catch (error) {
+      console.error(error);
+      setChat((prevChat) => [...prevChat, { type: "bot", text: "Sorry, there was an error generating the PDF." }]);
+    }
+
+    setIsGenerating(false);
+  };
+
+  const handleGenerateSlides = async () => {
+    setIsGenerating(true);
+    const request_id = localStorage.getItem("request_id");
+
+    try {
+      // TODO: Replace with actual API endpoint when backend is ready
+      // Simulating API call with mock data for now
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const newDocument: GeneratedDocument = {
+        id: `slides-${Date.now()}`,
+        type: 'slider',
+        title: 'Presentation Slides',
+        description: 'Key insights and highlights from your document',
+        pageCount: 8,
+        createdAt: new Date().toLocaleDateString(),
+        slides: [
+          {
+            id: 1,
+            title: 'Introduction',
+            content: 'Welcome to your auto-generated presentation. This slide deck summarizes the key points from your conversation and uploaded documents.',
+          },
+          {
+            id: 2,
+            title: 'Key Findings',
+            content: '• Main insight #1 from your document\n• Important point #2 discovered in conversation\n• Critical information #3 highlighted\n• Additional detail #4',
+          },
+          {
+            id: 3,
+            title: 'Data Analysis',
+            content: 'Based on the processed content, we identified several important patterns and trends that are worth discussing in more detail.',
+          },
+          {
+            id: 4,
+            title: 'Summary',
+            content: 'This presentation captures the essence of your conversation and provides a structured overview for easy sharing and presentation.',
+          },
+        ],
+      };
+
+      setGeneratedDocuments(prev => [...prev, newDocument]);
+      setChat((prevChat) => [...prevChat, { type: "bot", text: "✅ Presentation slides generated successfully! You can view and download them below." }]);
+    } catch (error) {
+      console.error(error);
+      setChat((prevChat) => [...prevChat, { type: "bot", text: "Sorry, there was an error generating the slides." }]);
+    }
+
+    setIsGenerating(false);
+  };
+
+  const handlePreviewDocument = (document: GeneratedDocument) => {
+    setPreviewDocument(document);
+    setShowPreviewModal(true);
+  };
+
+  const handleDownloadDocument = (document: GeneratedDocument) => {
+    // TODO: Implement actual download functionality when backend is ready
+    console.log('Downloading document:', document.id);
+    alert(`Download functionality will be implemented with backend integration.\nDocument: ${document.title}`);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreviewModal(false);
+    setTimeout(() => setPreviewDocument(null), 300);
   };
 
   return (
@@ -315,6 +432,27 @@ export default function Home() {
                             </div>
                         </div>
                     )}
+                    {/* Generated Documents */}
+                    {generatedDocuments.length > 0 && (
+                        <div className="space-y-4 mt-6">
+                            {generatedDocuments.map((doc) => (
+                                <div key={doc.id} className="flex items-start gap-4">
+                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 flex-shrink-0 flex items-center justify-center shadow-sm">
+                                        <FiCpu className="h-5 w-5 text-primary-600 dark:text-primary-300" />
+                                    </div>
+                                    <GeneratedDocumentCard
+                                        type={doc.type}
+                                        title={doc.title}
+                                        description={doc.description}
+                                        pageCount={doc.pageCount}
+                                        createdAt={doc.createdAt}
+                                        onPreview={() => handlePreviewDocument(doc)}
+                                        onDownload={() => handleDownloadDocument(doc)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 {isReady && suggestedQuestions.length > 0 && (
                     <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-white dark:bg-gray-800">
@@ -342,6 +480,12 @@ export default function Home() {
                     placeholder={isReady ? "Ask a question..." : "Upload a document or submit a URL to start"}
                     className="flex-1 rounded-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-3 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                     disabled={!isReady || asking}
+                    />
+                    <DocumentGenerationControls
+                        onGeneratePDF={handleGeneratePDF}
+                        onGenerateSlides={handleGenerateSlides}
+                        disabled={!isReady || chat.length === 0}
+                        isGenerating={isGenerating}
                     />
                     <button
                     onClick={handleQuestionSubmit}
@@ -495,6 +639,19 @@ export default function Home() {
             sources={selectedSources}
             onClose={() => setShowSourceModal(false)}
           />
+        )
+      }
+        {/* Document Preview Modal */}
+        {previewDocument && (
+            <DocumentPreviewModal
+                isOpen={showPreviewModal}
+                onClose={handleClosePreview}
+                type={previewDocument.type}
+                title={previewDocument.title}
+                pdfUrl={previewDocument.pdfUrl}
+                slides={previewDocument.slides}
+                onDownload={() => handleDownloadDocument(previewDocument)}
+            />
         )}
     </div>
   );
