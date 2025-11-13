@@ -10,11 +10,17 @@ import {
 } from "@/lib/chatHistory";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { FiChevronLeft, FiChevronRight, FiCpu, FiDownload, FiFileText, FiLink, FiMaximize2, FiRefreshCw, FiSend, FiTrash2, FiUpload, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiCpu, FiDownload, FiFileText, FiLink, FiMaximize2, FiRefreshCw, FiSend, FiTrash2, FiUpload, FiX, FiZoomIn, FiZoomOut, FiBook, FiStar, FiCopy } from "react-icons/fi";
 import DocumentGenerationControls from "../components/DocumentGenerationControls";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
 import GeneratedDocumentCard from "../components/GeneratedDocumentCard";
 import { API_BASE_URL } from "../lib/constants";
+import DocumentIntelligencePanel from "@/components/DocumentIntelligencePanel";
+import QuestionTemplatesLibrary from "@/components/QuestionTemplatesLibrary";
+import OutputStyleSelector, { OutputStyle } from "@/components/OutputStyleSelector";
+import CitationExporter from "@/components/CitationExporter";
+import ConversationExporter from "@/components/ConversationExporter";
+import { DESIGN_SYSTEM } from "@/lib/design-system";
 
 interface GeneratedDocument {
   id: string;
@@ -61,6 +67,14 @@ export default function Home() {
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<{name: string, type: string, uploadedAt: Date}[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // New feature states
+  const [showTemplatesLibrary, setShowTemplatesLibrary] = useState(false);
+  const [outputStyle, setOutputStyle] = useState<OutputStyle>('natural');
+  const [showCitationExporter, setShowCitationExporter] = useState(false);
+  const [showConversationExporter, setShowConversationExporter] = useState(false);
+  const [documentIntelligence, setDocumentIntelligence] = useState<any>(null);
+  const [intelligenceLoading, setIntelligenceLoading] = useState(false);
 
   useEffect(() => {
     const sessionId = searchParams.get("session");
@@ -190,6 +204,7 @@ export default function Home() {
         setIsReady(true);
         // setChat((prevChat) => [...prevChat, { type: "bot", text: "File uploaded successfully. You can now ask questions." }]);
         generateSuggestedQuestions();
+        generateDocumentIntelligence();
         setUploadedFiles(prev => [...prev, {
           name: file.name,
           type: file.type || 'unknown',
@@ -276,6 +291,37 @@ export default function Home() {
       "Are there any specific dates or numbers mentioned?",
     ];
     setSuggestedQuestions(suggestions);
+  };
+
+  const generateDocumentIntelligence = async () => {
+    setIntelligenceLoading(true);
+    try {
+      // In production, this would call your backend API
+      // For now, using mock data to demonstrate the feature
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const mockIntelligence = {
+        summary: "This document contains important information about the subject matter. Key insights and actionable items have been identified for quick reference.",
+        keyTopics: ["Main Topic", "Analysis", "Conclusions", "Recommendations", "Data Insights"],
+        entities: {
+          people: ["John Doe", "Jane Smith", "Dr. Johnson"],
+          organizations: ["Acme Corp", "Tech Solutions Inc"],
+          locations: ["San Francisco", "New York"],
+          dates: ["2024", "Q1 2024", "March 15"],
+        },
+        statistics: {
+          wordCount: 5420,
+          pageCount: uploadedFiles[0]?.name.endsWith('.pdf') ? 12 : 1,
+          readingTime: "22 min",
+        },
+      };
+
+      setDocumentIntelligence(mockIntelligence);
+    } catch (error) {
+      console.error("Failed to generate intelligence:", error);
+    } finally {
+      setIntelligenceLoading(false);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -475,8 +521,8 @@ export default function Home() {
     <div className="flex h-screen flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-800 p-4 md:p-8">
         <div className="mx-auto w-full h-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {/* Left side: Chat Interface */}
-            <div className="md:col-span-2 flex flex-col h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
-                <header className="flex items-center justify-between bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-700 px-6 md:px-8 py-6 border-b border-blue-700/30 shadow-lg">
+            <div className="md:col-span-2 flex flex-col h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+                <header className="flex items-center justify-between bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 dark:from-blue-600 dark:via-indigo-600 dark:to-purple-700 px-6 md:px-8 py-6 border-b border-blue-700/30 shadow-lg">
                     <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
                             <FiCpu className="h-6 w-6 text-white" />
@@ -598,44 +644,105 @@ export default function Home() {
                         </div>
                     )}
                 </div>
-                <div className="flex items-center gap-3 border-t border-gray-200 dark:border-gray-700 p-6 bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                    <input
-                    type="text"
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleQuestionSubmit()}
-                    placeholder={isReady ? "Ask me anything about your document..." : "Upload a document first to start chatting"}
-                    className="flex-1 rounded-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-3.5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
-                    disabled={!isReady || asking}
-                    />
-                    <DocumentGenerationControls
-                        onGeneratePDF={handleGeneratePDF}
-                        onGenerateSlides={handleGenerateSlides}
-                        disabled={!isReady || chat.length === 0}
-                        isGenerating={isGenerating}
-                    />
-                    <button
-                    onClick={handleQuestionSubmit}
-                    disabled={!isReady || !question || asking}
-                    className="rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 p-3.5 text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-md relative overflow-hidden group"
-                    title="Send message"
-                    >
-                    {asking ? (
-                        <FiRefreshCw className="h-6 w-6 animate-spin" />
-                    ) : (
-                        <FiSend className="h-6 w-6 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    )}
-                    </button>
+                {/* Enhanced Input Area */}
+                <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm">
+                    {/* New Feature Controls */}
+                    <div className="px-6 pt-4 pb-2 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowTemplatesLibrary(true)}
+                                disabled={!isReady}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm text-sm font-medium"
+                                title="Browse question templates"
+                            >
+                                <FiBook className="h-4 w-4" />
+                                Templates
+                            </button>
+
+                            <button
+                                onClick={() => setShowCitationExporter(true)}
+                                disabled={!isReady || chat.length === 0}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm text-sm font-medium"
+                                title="Export citations"
+                            >
+                                <FiCopy className="h-4 w-4" />
+                                Citations
+                                <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
+                                    PRO
+                                </span>
+                            </button>
+
+                            <button
+                                onClick={() => setShowConversationExporter(true)}
+                                disabled={!isReady || chat.length === 0}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm text-sm font-medium"
+                                title="Export conversation"
+                            >
+                                <FiDownload className="h-4 w-4" />
+                                Export
+                                <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
+                                    PRO
+                                </span>
+                            </button>
+                        </div>
+
+                        <OutputStyleSelector
+                            currentStyle={outputStyle}
+                            onStyleChange={setOutputStyle}
+                            disabled={!isReady}
+                        />
+                    </div>
+
+                    {/* Input Row */}
+                    <div className="flex items-center gap-3 p-6">
+                        <input
+                        type="text"
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleQuestionSubmit()}
+                        placeholder={isReady ? "Ask me anything about your document..." : "Upload a document first to start chatting"}
+                        className="flex-1 rounded-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-3.5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                        disabled={!isReady || asking}
+                        />
+                        <DocumentGenerationControls
+                            onGeneratePDF={handleGeneratePDF}
+                            onGenerateSlides={handleGenerateSlides}
+                            disabled={!isReady || chat.length === 0}
+                            isGenerating={isGenerating}
+                        />
+                        <button
+                        onClick={handleQuestionSubmit}
+                        disabled={!isReady || !question || asking}
+                        className="rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 p-3.5 text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-md relative overflow-hidden group"
+                        title="Send message"
+                        >
+                        {asking ? (
+                            <FiRefreshCw className="h-6 w-6 animate-spin" />
+                        ) : (
+                            <FiSend className="h-6 w-6 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                        )}
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* Right side: File Upload and PDF Viewer */}
-            <div className="hidden md:flex flex-col h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+            <div className="hidden md:flex flex-col h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+                {/* Document Intelligence Panel */}
+                {isReady && (
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <DocumentIntelligencePanel
+                            intelligence={documentIntelligence}
+                            isLoading={intelligenceLoading}
+                        />
+                    </div>
+                )}
+
                 {showPdfViewer && pdfUrl ? (
                     // PDF Viewer
                     <div className="flex flex-col h-full">
                         {/* PDF Viewer Header */}
-                        <div className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 px-6 py-4 border-b border-purple-700/30">
+                        <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 dark:from-blue-600 dark:via-indigo-600 dark:to-purple-700 px-6 py-4 border-b border-blue-700/30">
                             <div className="flex items-center justify-between mb-3">
                                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                                     <FiFileText className="h-5 w-5" />
@@ -739,7 +846,7 @@ export default function Home() {
                             <a
                                 href={pdfUrl}
                                 download
-                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-3 text-white font-semibold shadow-lg transition-all hover:shadow-xl active:scale-95"
+                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-700 py-3 text-white font-semibold shadow-lg transition-all hover:shadow-xl active:scale-95"
                             >
                                 <FiDownload className="h-5 w-5" />
                                 Download PDF
@@ -875,7 +982,7 @@ export default function Home() {
         {/* Mobile Upload Modal */}
         {showUploadModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-                <div className="relative w-full max-w-md max-h-[90vh] bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-y-auto border border-gray-200 dark:border-gray-700">
+                <div className="relative w-full max-w-md max-h-[90vh] bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-y-auto border border-gray-200 dark:border-gray-700">
                     {/* Close Button */}
                     <button
                         onClick={() => setShowUploadModal(false)}
@@ -1004,6 +1111,33 @@ export default function Home() {
                 pdfUrl={previewDocument.pdfUrl}
                 slides={previewDocument.slides}
                 onDownload={() => handleDownloadDocument(previewDocument)}
+            />
+        )}
+
+        {/* Question Templates Library */}
+        <QuestionTemplatesLibrary
+            isOpen={showTemplatesLibrary}
+            onClose={() => setShowTemplatesLibrary(false)}
+            onSelectQuestion={(question) => setQuestion(question)}
+        />
+
+        {/* Citation Exporter */}
+        {showCitationExporter && chat.length > 0 && (
+            <CitationExporter
+                sources={chat
+                    .filter(msg => msg.sources && msg.sources.length > 0)
+                    .flatMap(msg => msg.sources || [])}
+                documentTitle={uploadedFiles[0]?.name || "Document"}
+                onClose={() => setShowCitationExporter(false)}
+            />
+        )}
+
+        {/* Conversation Exporter */}
+        {showConversationExporter && chat.length > 0 && (
+            <ConversationExporter
+                chat={chat}
+                documentTitle={uploadedFiles[0]?.name || "Conversation"}
+                onClose={() => setShowConversationExporter(false)}
             />
         )}
         <style jsx>{`

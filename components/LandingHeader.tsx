@@ -23,6 +23,9 @@ export default function LandingHeader() {
             <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
               Features
             </a>
+            <Link href="/pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Pricing
+            </Link>
             <a href="#about" className="text-gray-600 hover:text-gray-900 transition-colors">
               About
             </a>
