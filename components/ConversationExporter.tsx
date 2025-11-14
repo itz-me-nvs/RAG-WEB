@@ -86,9 +86,6 @@ export default function ConversationExporter({ chat, documentTitle, onClose }: P
                 Download your chat as a professional report
               </p>
             </div>
-            <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
-              PRO
-            </span>
           </div>
         </div>
 

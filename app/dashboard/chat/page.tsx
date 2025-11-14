@@ -667,9 +667,6 @@ export default function Home() {
                             >
                                 <FiCopy className="h-4 w-4" />
                                 Citations
-                                <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
-                                    PRO
-                                </span>
                             </button>
 
                             <button
@@ -680,9 +677,6 @@ export default function Home() {
                             >
                                 <FiDownload className="h-4 w-4" />
                                 Export
-                                <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
-                                    PRO
-                                </span>
                             </button>
                         </div>
 

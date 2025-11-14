@@ -45,9 +45,6 @@ export default function DocumentIntelligencePanel({ intelligence, isLoading }: P
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
             Document Intelligence
           </h3>
-          <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
-            PRO
-          </span>
         </div>
         {isExpanded ? (
           <FiChevronUp className="h-5 w-5 text-gray-500" />

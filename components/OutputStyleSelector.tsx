@@ -99,14 +99,6 @@ export default function OutputStyleSelector({ onStyleChange, currentStyle, disab
                 );
               })}
             </div>
-            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 border-t border-purple-200 dark:border-purple-800">
-              <div className="flex items-center gap-2 text-xs text-purple-700 dark:text-purple-300">
-                <span className="px-2 py-0.5 bg-purple-200 dark:bg-purple-900/40 rounded-full font-semibold">
-                  PRO
-                </span>
-                <span>Enhanced output styles available</span>
-              </div>
-            </div>
           </div>
         </>
       )}

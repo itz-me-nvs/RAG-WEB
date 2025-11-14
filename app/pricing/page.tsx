@@ -1,20 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { FiCheck, FiZap, FiUsers, FiX } from 'react-icons/fi';
-import { FEATURE_TIERS } from '@/lib/design-system';
+import { FiCheck, FiX } from 'react-icons/fi';
+import { FaCoffee, FaGithub, FaStar, FaHeart } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function PricingPage() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
-
-  const getPrice = (monthlyPrice: number) => {
-    if (billingCycle === 'annually') {
-      return (monthlyPrice * 10).toFixed(2); // 2 months free
-    }
-    return monthlyPrice.toFixed(2);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-800">
       {/* Header */}
@@ -42,179 +32,231 @@ export default function PricingPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         {/* Hero Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full font-semibold mb-6">
+            <FaStar className="h-4 w-4" />
+            <span>100% Free & Open Source</span>
+          </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            Simple, Transparent{' '}
+            Free{' '}
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Pricing
+              Forever
             </span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
-            Choose the plan that fits your needs. Start free, upgrade when you're ready.
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-4">
+            Use your own Groq API key and enjoy unlimited access to all features.
+            No hidden costs, no subscriptions, no limits.
           </p>
+          <p className="text-lg text-gray-500 dark:text-gray-500 max-w-2xl mx-auto">
+            If you find this useful, consider supporting development with a coffee ☕
+          </p>
+        </div>
 
-          {/* Billing Toggle */}
-          <div className="inline-flex items-center gap-4 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-2 rounded-xl font-semibold transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle('annually')}
-              className={`px-6 py-2 rounded-xl font-semibold transition-all relative ${
-                billingCycle === 'annually'
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-              }`}
-            >
-              Annually
-              <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded-full">
-                -20%
-              </span>
-            </button>
+        {/* Main Card */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border-2 border-blue-200 dark:border-blue-800 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 px-8 py-6">
+              <div className="text-center text-white">
+                <h2 className="text-3xl font-bold mb-2">Complete Access</h2>
+                <div className="flex items-center justify-center gap-3 text-5xl font-bold my-4">
+                  <span>$0</span>
+                  <span className="text-2xl font-normal opacity-90">/forever</span>
+                </div>
+                <p className="text-blue-100 text-lg">
+                  Just bring your own Groq API key
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8">
+              {/* How it works */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 mb-6 border border-blue-200 dark:border-blue-800">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                  <FiCheck className="h-5 w-5 text-blue-600" />
+                  How It Works
+                </h3>
+                <ol className="space-y-2 text-gray-700 dark:text-gray-300">
+                  <li className="flex items-start gap-3">
+                    <span className="font-bold text-blue-600">1.</span>
+                    <span>Get a free Groq API key from <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">console.groq.com</a> (no credit card required)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="font-bold text-blue-600">2.</span>
+                    <span>Enter your API key in Settings</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="font-bold text-blue-600">3.</span>
+                    <span>Enjoy unlimited RAG chatbot with all features!</span>
+                  </li>
+                </ol>
+              </div>
+
+              {/* Features List */}
+              <div className="grid md:grid-cols-2 gap-4 mb-8">
+                {[
+                  'Unlimited document uploads',
+                  'Unlimited questions',
+                  'Document Intelligence Panel',
+                  'Citation Export (APA, MLA, Chicago)',
+                  'Enhanced output styles',
+                  'Question templates library',
+                  'Conversation export',
+                  'PDF viewer with zoom & navigation',
+                  'Multi-format support (PDF, DOCX, TXT)',
+                  'Web URL processing',
+                  'Source reference tracking',
+                  'Auto-generated presentations',
+                  'Dark mode support',
+                  'Mobile responsive design',
+                  'Privacy-focused (local storage)',
+                  'Open-source code',
+                ].map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <FiCheck className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/dashboard/settings"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+                >
+                  Get Started Free
+                  <FaStar className="h-5 w-5" />
+                </Link>
+                <a
+                  href="https://github.com/yourusername/rag-chatbot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gray-900 dark:bg-gray-700 text-white font-bold text-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-all shadow-lg"
+                >
+                  <FaGithub className="h-5 w-5" />
+                  View on GitHub
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {/* Free Tier */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover:shadow-xl transition-all">
-            <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                Free
-              </h3>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">
-                  $0
-                </span>
-                <span className="text-gray-600 dark:text-gray-400">/month</span>
+        {/* Support Section */}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl shadow-xl border-2 border-yellow-200 dark:border-yellow-800 overflow-hidden">
+            <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/40 dark:to-orange-900/40 px-6 py-4 border-b border-yellow-200 dark:border-yellow-800">
+              <div className="flex items-center justify-center gap-3">
+                <FaCoffee className="text-2xl text-yellow-700 dark:text-yellow-300" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  Support Development
+                </h2>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Perfect for trying out the platform
+            </div>
+
+            <div className="p-8 text-center space-y-4">
+              <FaHeart className="h-12 w-12 text-red-500 mx-auto" />
+              <p className="text-lg text-gray-700 dark:text-gray-300">
+                Love this project? Help keep it free and maintained!
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                This is a passion project built in my free time. Your support helps me
+                dedicate more time to adding features, fixing bugs, and creating tutorials.
+              </p>
+
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 space-y-2">
+                <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                  Every coffee helps with:
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    New features
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    Bug fixes
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    Documentation
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    Support
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href="https://www.buymeacoffee.com/yourhandle"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold text-lg shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+              >
+                <FaCoffee className="text-2xl" />
+                <span>Buy Me a Coffee</span>
+              </a>
+
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                Optional but greatly appreciated! 🙏
               </p>
             </div>
-
-            <ul className="space-y-3 mb-8">
-              {FEATURE_TIERS.FREE.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <FiCheck className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-300 text-sm">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="/dashboard/chat"
-              className="block w-full text-center px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
-            >
-              Get Started
-            </Link>
-          </div>
-
-          {/* Pro Tier - Featured */}
-          <div className="bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-2xl shadow-2xl p-8 text-white relative transform scale-105 hover:scale-110 transition-all">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full text-white font-bold text-sm shadow-lg">
-              MOST POPULAR
-            </div>
-
-            <div className="mb-6 mt-4">
-              <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                <FiZap className="h-6 w-6" />
-                Pro
-              </h3>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">${getPrice(FEATURE_TIERS.PRO.price)}</span>
-                <span className="text-blue-100">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
-              </div>
-              <p className="text-blue-100 mt-2">For power users and professionals</p>
-            </div>
-
-            <ul className="space-y-3 mb-8">
-              {FEATURE_TIERS.PRO.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <FiCheck className="h-5 w-5 text-white flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-sm">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button className="w-full px-6 py-3 rounded-xl bg-white text-blue-600 font-bold hover:bg-blue-50 transition-all shadow-lg">
-              Start Pro Trial
-            </button>
-          </div>
-
-          {/* Team Tier */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover:shadow-xl transition-all">
-            <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                <FiUsers className="h-6 w-6 text-purple-600" />
-                Team
-              </h3>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">
-                  ${getPrice(FEATURE_TIERS.TEAM.price)}
-                </span>
-                <span className="text-gray-600 dark:text-gray-400">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                For teams and organizations
-              </p>
-            </div>
-
-            <ul className="space-y-3 mb-8">
-              {FEATURE_TIERS.TEAM.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <FiCheck className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-300 text-sm">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg">
-              Contact Sales
-            </button>
           </div>
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto mt-16">
           <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-8">
             Frequently Asked Questions
           </h2>
           <div className="space-y-4">
             <details className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 group">
               <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between">
-                Can I upgrade or downgrade at any time?
+                Is this really 100% free?
                 <FiX className="h-5 w-5 transform group-open:rotate-45 transition-transform" />
               </summary>
               <p className="text-gray-600 dark:text-gray-400 mt-4">
-                Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any charges.
+                Yes! This project is completely free and open-source. You just need your own Groq API key, which is also free with generous limits. No hidden costs, no premium tiers, no subscriptions.
               </p>
             </details>
 
             <details className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 group">
               <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between">
-                What payment methods do you accept?
+                How much does a Groq API key cost?
                 <FiX className="h-5 w-5 transform group-open:rotate-45 transition-transform" />
               </summary>
               <p className="text-gray-600 dark:text-gray-400 mt-4">
-                We accept all major credit cards, PayPal, and wire transfers for Team plans.
+                Groq offers a generous free tier with no credit card required. Their free tier includes enough credits for thousands of queries. Check their pricing at console.groq.com for the latest information.
               </p>
             </details>
 
             <details className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 group">
               <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between">
-                Is there a free trial for Pro?
+                Is my API key safe?
                 <FiX className="h-5 w-5 transform group-open:rotate-45 transition-transform" />
               </summary>
               <p className="text-gray-600 dark:text-gray-400 mt-4">
-                Yes! We offer a 14-day free trial of Pro with no credit card required. Experience all premium features risk-free.
+                Yes! Your API key is stored only in your browser's local storage and never sent to any server except Groq's API. You can verify this in the open-source code on GitHub.
+              </p>
+            </details>
+
+            <details className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 group">
+              <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between">
+                Why should I support with "Buy Me a Coffee"?
+                <FiX className="h-5 w-5 transform group-open:rotate-45 transition-transform" />
+              </summary>
+              <p className="text-gray-600 dark:text-gray-400 mt-4">
+                Supporting helps me dedicate more time to this project - adding features, fixing bugs, and creating tutorials. It's completely optional, but every coffee is deeply appreciated and motivates me to keep improving the tool!
+              </p>
+            </details>
+
+            <details className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 group">
+              <summary className="font-semibold text-gray-900 dark:text-gray-100 cursor-pointer list-none flex items-center justify-between">
+                Can I contribute to the code?
+                <FiX className="h-5 w-5 transform group-open:rotate-45 transition-transform" />
+              </summary>
+              <p className="text-gray-600 dark:text-gray-400 mt-4">
+                Absolutely! This is an open-source project and contributions are welcome. Check out the GitHub repository to submit pull requests, report bugs, or suggest features.
               </p>
             </details>
           </div>

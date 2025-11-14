@@ -56,13 +56,15 @@ export default function DashboardSidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-gray-200 space-y-2">
-        <Link
-          href="/pricing"
-          className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg font-semibold"
+        <a
+          href="https://www.buymeacoffee.com/yourhandle"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 transition-all shadow-lg font-semibold"
         >
           <FaCrown className="text-lg" />
-          <span className="text-sm">Upgrade to Pro</span>
-        </Link>
+          <span className="text-sm">Support Us ☕</span>
+        </a>
         <Link
           href="/"
           className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
