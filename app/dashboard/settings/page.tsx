@@ -4,12 +4,12 @@ import { FaCog } from 'react-icons/fa';
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-indigo-50 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center shadow-md">
               <FaCog className="text-2xl text-blue-600" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900">Settings</h1>
@@ -20,29 +20,29 @@ export default function SettingsPage() {
         </div>
 
         {/* Settings Content */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg p-8 border border-blue-200">
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-gray-900 mb-4">General Settings</h2>
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                <div className="flex items-center justify-between py-3 border-b border-blue-100">
                   <div>
                     <h3 className="font-medium text-gray-900">Theme</h3>
                     <p className="text-sm text-gray-600">Choose your preferred theme</p>
                   </div>
-                  <select className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <select className="px-4 py-2 rounded-lg border-2 border-blue-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     <option>Light</option>
                     <option>Dark</option>
                     <option>System</option>
                   </select>
                 </div>
 
-                <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                <div className="flex items-center justify-between py-3 border-b border-blue-100">
                   <div>
                     <h3 className="font-medium text-gray-900">Language</h3>
                     <p className="text-sm text-gray-600">Select your language preference</p>
                   </div>
-                  <select className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <select className="px-4 py-2 rounded-lg border-2 border-blue-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     <option>English</option>
                     <option>Spanish</option>
                     <option>French</option>
