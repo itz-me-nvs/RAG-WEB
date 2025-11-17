@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FaCog, FaKey, FaCoffee, FaCheck, FaExternalLinkAlt, FaInfoCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaCheck, FaCoffee, FaCog, FaExternalLinkAlt, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function SettingsPage() {
   const [groqApiKey, setGroqApiKey] = useState('');
@@ -44,13 +44,13 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-800 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-indigo-50 p-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-              <FaCog className="text-2xl text-white" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center shadow-md">
+              <FaCog className="text-2xl text-blue-600" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
           </div>
@@ -59,37 +59,45 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        {/* API Key Configuration */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md">
-                <FaKey className="text-white text-lg" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                  Groq API Key
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Use your own Groq API key to power the chatbot - 100% Free!
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Settings Content */}
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg p-8 border border-blue-200">
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">General Settings</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-3 border-b border-blue-100">
+                  <div>
+                    <h3 className="font-medium text-gray-900">Theme</h3>
+                    <p className="text-sm text-gray-600">Choose your preferred theme</p>
+                  </div>
+                  <select className="px-4 py-2 rounded-lg border-2 border-blue-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <option>Light</option>
+                    <option>Dark</option>
+                    <option>System</option>
+                  </select>
+                </div>
 
-          <div className="p-6 space-y-6">
-            {/* Info Box */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-              <div className="flex items-start gap-3">
-                <FaInfoCircle className="text-blue-600 dark:text-blue-400 text-lg mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                  <p className="font-semibold">Why provide your own API key?</p>
-                  <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>Use the app completely free without any usage limits</li>
-                    <li>Your API key is stored locally in your browser only</li>
-                    <li>Get faster responses with Groq's ultra-fast inference</li>
-                    <li>Full control over your API usage and costs</li>
-                  </ul>
+                <div className="flex items-center justify-between py-3 border-b border-blue-100">
+                  <div>
+                    <h3 className="font-medium text-gray-900">Language</h3>
+                    <p className="text-sm text-gray-600">Select your language preference</p>
+                  </div>
+                  <select className="px-4 py-2 rounded-lg border-2 border-blue-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <option>English</option>
+                    <option>Spanish</option>
+                    <option>French</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between py-3">
+                  <div>
+                    <h3 className="font-medium text-gray-900">Notifications</h3>
+                    <p className="text-sm text-gray-600">Enable or disable notifications</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
                 </div>
               </div>
             </div>
