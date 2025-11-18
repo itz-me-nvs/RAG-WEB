@@ -30,20 +30,32 @@ export default function LandingHeader() {
               About
             </a>
             <Link
-              href="/dashboard"
+              href="/login"
+              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
               className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-medium hover:scale-105 transition-transform"
             >
-              Get Started
+              Sign Up
             </Link>
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
             <Link
-              href="/dashboard"
+              href="/login"
+              className="px-4 py-2 rounded-xl text-gray-700 text-sm font-medium hover:bg-gray-100 transition-colors"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
               className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-sm font-medium"
             >
-              Get Started
+              Sign Up
             </Link>
           </div>
         </div>

@@ -1,47 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FaCheck, FaCoffee, FaCog, FaExternalLinkAlt, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaCog, FaCoins, FaCreditCard, FaHistory } from 'react-icons/fa';
 
 export default function SettingsPage() {
-  const [groqApiKey, setGroqApiKey] = useState('');
-  const [showApiKey, setShowApiKey] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [credits, setCredits] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load API key from localStorage on mount
+  // Load user credits on mount
   useEffect(() => {
-    const savedKey = localStorage.getItem('groq_api_key');
-    if (savedKey) {
-      setGroqApiKey(savedKey);
-      setIsSaved(true);
-    }
-  }, []);
-
-  const handleSaveApiKey = () => {
-    setIsLoading(true);
-
-    // Save to localStorage
-    if (groqApiKey.trim()) {
-      localStorage.setItem('groq_api_key', groqApiKey.trim());
-      setIsSaved(true);
-
-      // Show success feedback
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-    } else {
-      localStorage.removeItem('groq_api_key');
-      setIsSaved(false);
+    // TODO: Replace with actual API call to backend
+    // Example: const response = await fetch('/api/user/credits');
+    // For now, using mock data
+    setTimeout(() => {
+      setCredits(250); // Mock data
       setIsLoading(false);
-    }
-  };
-
-  const handleRemoveApiKey = () => {
-    localStorage.removeItem('groq_api_key');
-    setGroqApiKey('');
-    setIsSaved(false);
-  };
+    }, 500);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-indigo-50 p-8">
@@ -55,201 +30,79 @@ export default function SettingsPage() {
             <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Configure your API keys and support the project
+            Manage your account and view your credit balance
           </p>
         </div>
 
-        {/* Settings Content */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg p-8 border border-blue-200">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">General Settings</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-blue-100">
-                  <div>
-                    <h3 className="font-medium text-gray-900">Theme</h3>
-                    <p className="text-sm text-gray-600">Choose your preferred theme</p>
-                  </div>
-                  <select className="px-4 py-2 rounded-lg border-2 border-blue-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                    <option>Light</option>
-                    <option>Dark</option>
-                    <option>System</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-between py-3 border-b border-blue-100">
-                  <div>
-                    <h3 className="font-medium text-gray-900">Language</h3>
-                    <p className="text-sm text-gray-600">Select your language preference</p>
-                  </div>
-                  <select className="px-4 py-2 rounded-lg border-2 border-blue-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                    <option>English</option>
-                    <option>Spanish</option>
-                    <option>French</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-between py-3">
-                  <div>
-                    <h3 className="font-medium text-gray-900">Notifications</h3>
-                    <p className="text-sm text-gray-600">Enable or disable notifications</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* API Key Input */}
-            <div className="space-y-3">
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Your Groq API Key
-              </label>
-              <div className="relative">
-                <input
-                  type={showApiKey ? 'text' : 'password'}
-                  value={groqApiKey}
-                  onChange={(e) => {
-                    setGroqApiKey(e.target.value);
-                    setIsSaved(false);
-                  }}
-                  placeholder="gsk_..."
-                  className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono text-sm"
-                />
-                <button
-                  onClick={() => setShowApiKey(!showApiKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                  title={showApiKey ? 'Hide API key' : 'Show API key'}
-                >
-                  {showApiKey ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
-                </button>
-              </div>
-
-              {isSaved && (
-                <div className="flex items-center gap-2 text-green-600 dark:text-green-400 text-sm">
-                  <FaCheck className="h-4 w-4" />
-                  <span>API key saved successfully</span>
-                </div>
-              )}
-            </div>
-
-            {/* How to get API key */}
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
-                How to get your Groq API key:
-              </h3>
-              <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
-                <li>Visit <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">console.groq.com <FaExternalLinkAlt className="h-3 w-3" /></a></li>
-                <li>Sign up for a free account (no credit card required)</li>
-                <li>Navigate to API Keys section</li>
-                <li>Create a new API key and copy it</li>
-                <li>Paste it above and click Save</li>
-              </ol>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={handleSaveApiKey}
-                disabled={!groqApiKey.trim() || isLoading}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <FaCheck className="h-4 w-4" />
-                    Save API Key
-                  </>
-                )}
-              </button>
-
-              {isSaved && (
-                <button
-                  onClick={handleRemoveApiKey}
-                  className="px-6 py-3 rounded-xl bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 font-semibold hover:bg-red-200 dark:hover:bg-red-900/50 transition-all"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Buy Me a Coffee Section */}
-        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl shadow-lg border-2 border-yellow-200 dark:border-yellow-800 overflow-hidden">
-          <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/40 dark:to-orange-900/40 px-6 py-4 border-b border-yellow-200 dark:border-yellow-800">
+        {/* Credit Balance Section */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-lg border-2 border-blue-200 dark:border-blue-800 overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 px-6 py-4 border-b border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-600 shadow-md">
-                <FaCoffee className="text-white text-lg" />
+              <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md">
+                <FaCoins className="text-white text-lg" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                  Support This Project
+                  Your Credits
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Help keep this project free and open-source
+                  Manage your account balance
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="p-6 space-y-4">
-            <div className="text-gray-700 dark:text-gray-300 space-y-3">
-              <p className="font-semibold text-lg">
-                ☕ Enjoying this free RAG chatbot?
-              </p>
-              <p className="text-sm leading-relaxed">
-                This project is completely free and open-source. If you find it useful and want to support
-                continued development, consider buying me a coffee! Your support helps cover development
-                time, server costs, and keeps new features coming.
-              </p>
+          <div className="p-6">
+            <div className="text-center mb-6">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Available Credits</p>
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                    {credits.toLocaleString()}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    1 credit = 1 question answered
+                  </p>
+                </>
+              )}
+            </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 space-y-2">
-                <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">
-                  What your support enables:
-                </p>
-                <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    New features and improvements
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    Bug fixes and maintenance
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    Better documentation and tutorials
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    Community support
-                  </li>
-                </ul>
+            {/* Credit Status */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Credit Status</span>
+                <span className={`text-sm font-semibold ${credits > 100 ? 'text-green-600' : credits > 20 ? 'text-yellow-600' : 'text-red-600'}`}>
+                  {credits > 100 ? 'Healthy' : credits > 20 ? 'Low' : 'Critical'}
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all ${credits > 100 ? 'bg-gradient-to-r from-green-500 to-emerald-600' : credits > 20 ? 'bg-gradient-to-r from-yellow-500 to-orange-600' : 'bg-gradient-to-r from-red-500 to-rose-600'}`}
+                  style={{ width: `${Math.min(100, (credits / 500) * 100)}%` }}
+                ></div>
               </div>
             </div>
 
-            {/* Buy Me a Coffee Button */}
+            {/* Buy More Credits Button */}
             <a
-              href="https://www.buymeacoffee.com/yourhandle"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold text-lg shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+              href="/pricing"
+              className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold text-lg shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95"
             >
-              <FaCoffee className="text-2xl" />
-              <span>Buy Me a Coffee</span>
-              <FaExternalLinkAlt className="text-sm" />
+              <FaCreditCard className="text-xl" />
+              <span>Buy More Credits</span>
             </a>
 
-            <p className="text-center text-xs text-gray-500 dark:text-gray-400">
-              Every coffee helps and is greatly appreciated! 🙏
-            </p>
+            {/* View History Link */}
+            <div className="text-center mt-4">
+              <a href="/dashboard/history" className="text-sm text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-2">
+                <FaHistory className="h-4 w-4" />
+                View Usage History
+              </a>
+            </div>
           </div>
         </div>
 
