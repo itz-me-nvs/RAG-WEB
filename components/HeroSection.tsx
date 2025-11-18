@@ -26,25 +26,33 @@ export default function HeroSection() {
         </h1>
 
         {/* Subheading */}
-        <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
+        <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
           Upload documents, ask questions, and generate professional PDFs, presentations, and CVs with AI-powered intelligence.
         </p>
+
+        {/* Signup Bonus Badge */}
+        <div className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 mb-8">
+          <span className="text-2xl">🎁</span>
+          <span className="text-sm md:text-base font-semibold text-green-700">
+            Sign up now and get <span className="text-green-800">100 free credits</span>!
+          </span>
+        </div>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="/dashboard"
+            href="/signup"
             className="group px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-semibold text-lg hover:scale-105 transition-transform flex items-center space-x-2"
           >
-            <span>Get Started</span>
+            <span>Start Free Trial</span>
             <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
           </Link>
-          <a
-            href="#features"
+          <Link
+            href="/pricing"
             className="px-8 py-4 rounded-xl bg-white border-2 border-gray-300 text-gray-700 font-semibold text-lg hover:border-gray-400 transition-colors"
           >
-            Learn More
-          </a>
+            View Pricing
+          </Link>
         </div>
 
         {/* Feature Highlights */}

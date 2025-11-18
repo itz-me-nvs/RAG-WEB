@@ -1,11 +1,25 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaHome, FaCog, FaInfoCircle, FaRobot, FaHistory, FaCrown } from 'react-icons/fa';
+import { FaHome, FaCog, FaInfoCircle, FaRobot, FaHistory, FaCoins, FaPlus } from 'react-icons/fa';
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const [credits, setCredits] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load user credits on mount
+  useEffect(() => {
+    // TODO: Replace with actual API call to backend
+    // Example: const response = await fetch('/api/user/credits');
+    // For now, using mock data
+    setTimeout(() => {
+      setCredits(250); // Mock data
+      setIsLoading(false);
+    }, 500);
+  }, []);
 
   const navItems = [
     { name: 'Home', path: '/dashboard', icon: FaHome },
@@ -54,20 +68,40 @@ export default function DashboardSidebar() {
         </ul>
       </nav>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-200 space-y-2">
-        <a
-          href="https://www.buymeacoffee.com/yourhandle"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 transition-all shadow-lg font-semibold"
-        >
-          <FaCrown className="text-lg" />
-          <span className="text-sm">Support Us ☕</span>
-        </a>
+      {/* Footer - Credits Display */}
+      <div className="p-4 border-t border-gray-200 space-y-3">
+        {/* Credits Card */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <FaCoins className="text-blue-600 text-lg" />
+              <span className="text-sm font-semibold text-gray-700">Credits</span>
+            </div>
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+            ) : (
+              <span className="text-lg font-bold text-blue-600">{credits.toLocaleString()}</span>
+            )}
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+            <div
+              className={`h-1.5 rounded-full transition-all ${credits > 100 ? 'bg-gradient-to-r from-green-500 to-emerald-600' : credits > 20 ? 'bg-gradient-to-r from-yellow-500 to-orange-600' : 'bg-gradient-to-r from-red-500 to-rose-600'}`}
+              style={{ width: `${Math.min(100, (credits / 500) * 100)}%` }}
+            ></div>
+          </div>
+          <Link
+            href="/pricing"
+            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md text-sm font-semibold"
+          >
+            <FaPlus className="text-xs" />
+            <span>Buy Credits</span>
+          </Link>
+        </div>
+
+        {/* Back to Home Link */}
         <Link
           href="/"
-          className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+          className="flex items-center justify-center px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
         >
           <span className="text-sm font-medium">Back to Home</span>
         </Link>
