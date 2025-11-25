@@ -5,10 +5,19 @@ export interface SourceReference {
   metadata?: Record<string, any>;
 }
 
+export interface GeneratedDocument {
+  type: 'pdf' | 'slider';
+  title: string;
+  description?: string;
+  pageCount?: number;
+  url: string;
+}
+
 export interface ChatMessage {
   type: "user" | "bot";
   text: string;
   sources?: SourceReference[];
+  generatedDocument?: GeneratedDocument;
 }
 
 export interface ChatSession {

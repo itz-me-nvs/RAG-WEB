@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiBook, FiCodepen, FiBriefcase, FiGlobe, FiSearch, FiX } from 'react-icons/fi';
+import { FiBook, FiBriefcase, FiCodepen, FiGlobe, FiSearch, FiX } from 'react-icons/fi';
 
 interface QuestionTemplate {
   id: string;
@@ -139,33 +139,33 @@ export default function QuestionTemplatesLibrary({ onSelectQuestion, isOpen, onC
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-      <div className="relative w-full max-w-3xl max-h-[80vh] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fadeIn">
+      <div className="relative w-full max-w-2xl max-h-[80vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-gray-200 dark:border-gray-800">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md">
-              <FiBook className="h-6 w-6 text-white" />
+            <div className="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-primary-600 dark:text-primary-400">
+              <FiBook className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Question Templates
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Choose from pre-built questions for different document types
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Choose from pre-built questions
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-xl bg-white/80 dark:bg-gray-700 p-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600 transition-all"
+            className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <FiX className="h-6 w-6" />
+            <FiX className="h-5 w-5" />
           </button>
         </div>
 
         {/* Search and Filter */}
-        <div className="p-6 space-y-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-6 space-y-4 border-b border-gray-100 dark:border-gray-800">
           {/* Search */}
           <div className="relative">
             <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -174,20 +174,20 @@ export default function QuestionTemplatesLibrary({ onSelectQuestion, isOpen, onC
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search questions..."
-              className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="modern-input pl-11"
             />
           </div>
 
           {/* Category Tabs */}
-          <div className="flex gap-2 overflow-x-auto">
+          <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   selectedCategory === category
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-primary-600 text-white shadow-sm'
+                    : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
                 {category}
@@ -197,7 +197,7 @@ export default function QuestionTemplatesLibrary({ onSelectQuestion, isOpen, onC
         </div>
 
         {/* Templates List */}
-        <div className="p-6 overflow-y-auto max-h-[50vh] space-y-2">
+        <div className="p-6 overflow-y-auto max-h-[50vh] space-y-3 custom-scrollbar">
           {filteredTemplates.length > 0 ? (
             filteredTemplates.map((template) => {
               const Icon = template.icon;
@@ -205,13 +205,13 @@ export default function QuestionTemplatesLibrary({ onSelectQuestion, isOpen, onC
                 <button
                   key={template.id}
                   onClick={() => handleSelectQuestion(template.question)}
-                  className="w-full flex items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-left group border border-gray-200 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
+                  className="w-full flex items-start gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary-200 dark:hover:border-primary-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all text-left group"
                 >
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 group-hover:from-blue-500 group-hover:to-indigo-600 transition-all">
-                    <Icon className="h-5 w-5 text-blue-600 dark:text-blue-300 group-hover:text-white" />
+                  <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    <Icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                       {template.question}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">

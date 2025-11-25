@@ -1,6 +1,6 @@
 'use client';
 
-import { FiFile, FiLayers, FiDownload, FiMaximize2 } from 'react-icons/fi';
+import { FiDownload, FiFile, FiLayers, FiMaximize2 } from 'react-icons/fi';
 
 interface GeneratedDocumentCardProps {
   type: 'pdf' | 'slider';
@@ -23,133 +23,77 @@ export default function GeneratedDocumentCard({
 }: GeneratedDocumentCardProps) {
   const Icon = type === 'pdf' ? FiFile : FiLayers;
   const typeLabel = type === 'pdf' ? 'PDF Document' : 'Presentation Slides';
-  const bgGradient = type === 'pdf'
-    ? 'from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20'
-    : 'from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20';
-  const iconColor = type === 'pdf'
-    ? 'text-red-600 dark:text-red-400'
-    : 'text-blue-600 dark:text-blue-400';
-  const borderColor = type === 'pdf'
-    ? 'border-red-200 dark:border-red-800/50'
-    : 'border-blue-200 dark:border-blue-800/50';
+  const iconBg = type === 'pdf' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-orange-50 dark:bg-orange-900/20';
+  const iconColor = type === 'pdf' ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400';
 
   return (
     <div
-      className={`
-        relative group w-full max-w-md
-        bg-gradient-to-br ${bgGradient}
-        border-2 ${borderColor}
-        rounded-2xl p-5
-        shadow-lg hover:shadow-2xl
-        transition-all duration-300
-        cursor-pointer
-        hover:scale-[1.02]
-        animate-slideInUp
-      `}
+      className="group relative w-full max-w-md bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
       onClick={onPreview}
     >
-      {/* Header */}
-      <div className="flex items-start gap-4 mb-4">
-        {/* Icon Container */}
+      <div className="flex items-start gap-4">
+        {/* Icon */}
         <div className={`
-          flex-shrink-0
-          w-14 h-14
-          rounded-xl
-          bg-white dark:bg-gray-800
-          shadow-md
-          flex items-center justify-center
-          ${iconColor}
-          group-hover:scale-110
-          transition-transform duration-300
+          flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center
+          ${iconBg} ${iconColor}
         `}>
-          <Icon size={28} strokeWidth={2} />
+          <Icon size={24} />
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={`
-              text-xs font-semibold uppercase tracking-wide
-              ${iconColor}
-            `}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               {typeLabel}
             </span>
+            {createdAt && (
+              <span className="text-xs text-gray-400">
+                {createdAt}
+              </span>
+            )}
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate mb-1">
             {title}
           </h3>
           {description && (
-            <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
               {description}
             </p>
           )}
+
+          <div className="flex items-center gap-3 mt-3">
+            {pageCount && (
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+                {pageCount} {type === 'pdf' ? 'pages' : 'slides'}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Metadata */}
-      <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-4">
-        <span className="flex items-center gap-1">
-          {pageCount && (
-            <>
-              <span className="font-medium">{pageCount}</span>
-              <span>{type === 'pdf' ? 'pages' : 'slides'}</span>
-            </>
-          )}
-        </span>
-        {createdAt && (
-          <span className="text-gray-500 dark:text-gray-500">
-            {createdAt}
-          </span>
-        )}
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex items-center gap-2">
+      {/* Hover Overlay Actions */}
+      <div className="absolute inset-0 bg-white/90 dark:bg-gray-900/90 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onPreview();
           }}
-          className={`
-            flex-1
-            flex items-center justify-center gap-2
-            px-4 py-2.5
-            bg-white dark:bg-gray-800
-            ${iconColor}
-            rounded-xl
-            font-semibold text-sm
-            shadow-sm hover:shadow-md
-            transition-all duration-200
-            hover:scale-105
-          `}
+          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium shadow-sm hover:bg-primary-700 transition-colors"
         >
           <FiMaximize2 size={16} />
-          <span>Open</span>
+          <span>Preview</span>
         </button>
         <button
           onClick={(e) => {
             e.stopPropagation();
             onDownload();
           }}
-          className={`
-            flex items-center justify-center
-            w-11 h-11
-            bg-white dark:bg-gray-800
-            ${iconColor}
-            rounded-xl
-            shadow-sm hover:shadow-md
-            transition-all duration-200
-            hover:scale-105
-          `}
-          aria-label="Download"
+          className="p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          title="Download"
         >
           <FiDownload size={18} />
         </button>
       </div>
-
-      {/* Hover Indicator */}
-      <div className="absolute inset-0 rounded-2xl ring-2 ring-transparent group-hover:ring-current opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none"
-           style={{ color: type === 'pdf' ? '#dc2626' : '#2563eb' }} />
     </div>
   );
 }

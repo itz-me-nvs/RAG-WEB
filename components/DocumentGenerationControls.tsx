@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiFile, FiLayers, FiChevronDown } from 'react-icons/fi';
+import { FiChevronDown, FiFile, FiLayers } from 'react-icons/fi';
 
 interface DocumentGenerationControlsProps {
   onGeneratePDF: () => void;
@@ -25,29 +25,24 @@ export default function DocumentGenerationControls({
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled || isGenerating}
         className={`
-          flex items-center gap-2
-          px-4 py-2.5
-          bg-gradient-to-r from-secondary-500 to-secondary-600
-          hover:from-secondary-600 hover:to-secondary-700
-          text-white
-          rounded-xl
-          font-semibold
-          shadow-lg hover:shadow-xl
-          transition-all duration-200
-          ${disabled || isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
+          flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
+          ${disabled || isGenerating
+            ? 'text-gray-400 cursor-not-allowed bg-gray-100 dark:bg-gray-800'
+            : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+          }
         `}
       >
         {isGenerating ? (
           <>
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
             <span>Generating...</span>
           </>
         ) : (
           <>
-            <FiFile size={18} />
-            <span>Generate Document</span>
+            <FiFile size={16} />
+            <span>Generate</span>
             <FiChevronDown
-              size={16}
+              size={14}
               className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
             />
           </>
@@ -64,31 +59,28 @@ export default function DocumentGenerationControls({
           />
 
           {/* Menu */}
-          <div className="absolute bottom-full mb-2 right-0 z-20 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-scaleIn">
-            <div className="p-2">
+          <div className="absolute top-full mt-2 right-0 z-20 w-64 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-lg animate-scaleIn overflow-hidden">
+            <div className="p-1">
               {/* PDF Option */}
               <button
                 onClick={() => {
                   onGeneratePDF();
                   setIsOpen(false);
                 }}
-                className="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group"
+                className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left group"
               >
-                <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                  <FiFile size={20} strokeWidth={2} />
+                <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center flex-shrink-0">
+                  <FiFile size={16} />
                 </div>
-                <div className="flex-1 text-left">
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-0.5">
-                    Generate PDF
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white text-sm">
+                    Export as PDF
                   </h4>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    Create a formatted PDF document from the conversation
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Formatted document
                   </p>
                 </div>
               </button>
-
-              {/* Divider */}
-              <div className="h-px bg-gray-200 dark:bg-gray-700 my-2" />
 
               {/* Slides Option */}
               <button
@@ -96,17 +88,17 @@ export default function DocumentGenerationControls({
                   onGenerateSlides();
                   setIsOpen(false);
                 }}
-                className="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors group"
+                className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left group"
               >
-                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                  <FiLayers size={20} strokeWidth={2} />
+                <div className="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center flex-shrink-0">
+                  <FiLayers size={16} />
                 </div>
-                <div className="flex-1 text-left">
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-0.5">
-                    Generate Slides
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white text-sm">
+                    Export as Slides
                   </h4>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    Create a presentation with key points and insights
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Presentation deck
                   </p>
                 </div>
               </button>

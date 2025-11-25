@@ -1,117 +1,131 @@
 @import "tailwindcss";
 
-/* Modern Color Palette - Tailwind v4 CSS-first */
+@variant dark (&:where(.dark, .dark *));
+
+/* Pop-Tech / Neo-Brutalist Theme */
 @theme {
-  /* Primary Colors */
-  --color-primary-50: #f0f5ff;
-  --color-primary-100: #e0ebff;
-  --color-primary-200: #c1d9ff;
-  --color-primary-300: #a2c7ff;
-  --color-primary-400: #6aa3ff;
-  --color-primary-500: #3366ff;
-  --color-primary-600: #2952d4;
-  --color-primary-700: #1f3ea8;
-  --color-primary-800: #152a7c;
-  --color-primary-900: #0f1a50;
+  /* Primary Colors - Electric Indigo */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
 
-  /* Secondary Colors - Purple */
-  --color-secondary-50: #faf5ff;
-  --color-secondary-100: #f3e8ff;
-  --color-secondary-200: #e9d5ff;
-  --color-secondary-300: #d8b4fe;
-  --color-secondary-400: #c084fc;
-  --color-secondary-500: #a855f7;
-  --color-secondary-600: #9333ea;
-  --color-secondary-700: #7e22ce;
-  --color-secondary-800: #6b21a8;
-  --color-secondary-900: #581c87;
+  /* Secondary Colors - Acid Green */
+  --color-secondary-50: #f7fee7;
+  --color-secondary-100: #ecfccb;
+  --color-secondary-200: #d9f99d;
+  /* Neutral Colors - Slate/Gray */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
 
-  /* Accent Colors - Cyan */
-  --color-accent-50: #ecfdfd;
-  --color-accent-100: #cffafe;
-  --color-accent-200: #a5f3fc;
-  --color-accent-300: #67e8f9;
-  --color-accent-400: #22d3ee;
-  --color-accent-500: #06b6d4;
-  --color-accent-600: #0891b2;
-  --color-accent-700: #0e7490;
-  --color-accent-800: #155e75;
-  --color-accent-900: #164e63;
-
-  /* Success Colors - Emerald */
-  --color-success-50: #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-200: #bbf7d0;
-  --color-success-300: #86efac;
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
-  --color-success-800: #166534;
-  --color-success-900: #145231;
-
-  /* Warning Colors - Amber */
-  --color-warning-50: #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-200: #fce7a6;
-  --color-warning-300: #fcd34d;
-  --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
-  --color-warning-900: #78350f;
-
-  /* Neutral Colors - Modern Gray */
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-
-  /* Background & Text */
-  --color-light-bg: #ffffff;
-  --color-light-text: #111827;
-  --color-dark-bg: #0f172a;
-  --color-dark-text: #f9fafb;
+  /* Fonts */
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Inter", sans-serif;
 
   /* Animations */
-  --animate-slideInUp: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-fadeIn: fadeIn 0.3s ease-out;
-  --animate-scaleIn: scaleIn 0.3s ease-out;
-}
+  --animate-slideUp: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-scaleIn: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
-:root {
-  --background: rgb(255 255 255);
-  --foreground: rgb(17 24 39);
-  --scrollbar-thumb-bg: #cbd5e1;
-  --scrollbar-thumb-hover-bg: #94a3b8;
-}
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: rgb(15 23 42);
-    --foreground: rgb(249 250 251);
-    --scrollbar-thumb-bg: #475569;
-    --scrollbar-thumb-hover-bg: #64748b;
+  @keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Base Variables */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: #f1f5f9;
 }
 
-/* Grid pattern for hero section */
-.bg-grid-pattern {
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+}
+
+/* Custom Components */
+@layer components {
+  .glass-panel {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200 dark:border-gray-800;
+  }
+
+  .modern-card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    @apply rounded-2xl border shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .modern-input {
+    @apply w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all;
+  }
+
+  .modern-button {
+    @apply px-4 py-2 rounded-xl font-medium transition-all active:scale-95;
+  }
+
+  .modern-button-primary {
+    @apply px-4 py-2 rounded-xl font-medium transition-all active:scale-95 bg-primary-600 text-white hover:bg-primary-700 shadow-sm hover:shadow-primary-500/25;
+  }
+
+  .modern-button-secondary {
+    @apply px-4 py-2 rounded-xl font-medium transition-all active:scale-95 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700;
+  }
+
+  .modern-button-ghost {
+    @apply px-4 py-2 rounded-xl font-medium transition-all active:scale-95 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800;
+  }
+
+  /* Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 dark:bg-gray-700 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-300 dark:bg-gray-600;
+  }
+}
+
+/* Base Styles */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  @apply antialiased transition-colors duration-200;
 }
